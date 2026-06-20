@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Desktop/">
+    <Project Path="Src/Desktop/ClinicManager.Core/ClinicManager.Core.csproj" />
+    <Project Path="Src/Desktop/ClinicManager.Win/ClinicManager.Win.csproj" />
+  </Folder> 
+  
+  <Folder Name="/DesktopTests/">
+    <Project Path="Src/Desktop.Tests/ClinicManager.Core.Tests/ClinicManager.Core.Tests.csproj" />
+    <Project Path="Src/Desktop.Tests/ClinicManager.Win.Tests/ClinicManager.Win.Tests.csproj" />
+    <Project Path="Src/Desktop.Tests/ClinicManager.E2E.Tests/ClinicManager.E2E.Tests.csproj" />
+    <Project Path="Src/Desktop.Tests/ClinicManager.Testing/ClinicManager.Testing.csproj" />
+  </Folder>
+  
+
+</Solution>

@@ -1,0 +1,89 @@
+name: Archive Dx
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_group:
+        description: 'Specific group to update (optional, leave empty for all)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  paket-update:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x' # Adjust to match your SDK version
+
+      - name: Restore Local Tools
+        run: dotnet tool restore
+        
+    
+      - name: Run Paket Update
+        id: paket
+        run: |
+          if ("${{ inputs.update_group }}" -ne "") {
+            echo "Updating specific group: ${{ inputs.update_group }}"
+            dotnet paket update group ${{ inputs.update_group }}
+          } else {
+            echo "Updating all packages"
+            dotnet paket update
+          }
+      - name: Zip DevExpress Packages
+        shell: pwsh
+        env:
+          ZIP_PWD: ${{ secrets.DxPass }}
+        run: |
+          $packageName = "dx.zip"
+          
+          $filesToZip = Get-ChildItem -Path "packages" -Filter "devexpress*.nupkg" -Recurse
+          if ($filesToZip.Count -eq 0) { exit 0 }
+          
+          # --- Echo packages to be archived ---
+          Write-Host "The following packages will be archived:"
+          $filesToZip.FullName | ForEach-Object { Write-Host " - $_" }
+          Write-Host "------------------------------------"
+          
+          # Access the environment variable using $env:
+          & 7z a -p"$env:ZIP_PWD" -v50m "$packageName" $($filesToZip.FullName) -y
+     
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Branch Configuration
+          branch: feature/paket-update
+          delete-branch: true
+          
+          # PR Content
+          title: "Paket Dependency Update"
+          body: |
+            ## Manual Update Triggered
+            
+            This update was triggered manually by @${{ github.actor }}.
+            
+            **Changes:**
+            - `paket.lock` (Updated versions)
+            - `paket.references` (If applicable)
+            
+          # COMMIT IDENTITY CONFIGURATION
+          # This maps the commit to the user who pressed the button
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          committer: GitHub <noreply@github.com>
+          commit-message: "chore(deps): update paket dependencies"
+          
+          # Labels
+          labels: |
+            dependencies
+            manual-trigger

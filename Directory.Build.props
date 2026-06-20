@@ -1,5 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+<Project>
   <PropertyGroup>
-        <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
-    </PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 </Project>
