@@ -4,11 +4,14 @@
         <LangVersion>13.0</LangVersion>
     </PropertyGroup>
 
-    <Target Name="PublishDesktopProject" BeforeTargets="Build">
-        <MSBuild Projects="..\Desktop\ClinicManager.Win/ClinicManager.Win.csproj"
-                 Targets="Publish"
-                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true" />
-        
+  <Target Name="PublishDesktopProject" BeforeTargets="Build"
+          Condition=" '$(NukeBuild)' != 'True' ">
+    <MSBuild Projects="..\Desktop\ClinicManager.Win/ClinicManager.Win.csproj"
+             Targets="Publish"
+             Properties="Configuration=$(Configuration);
+                         RuntimeIdentifier=win-x64;
+                         SelfContained=true;
+                         PublishProfile=FolderProfile" />
   </Target>
   
 </Project>
