@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+
+    <Target Name="PublishDesktopProject" BeforeTargets="Build">
+        <MSBuild Projects="..\Desktop\ClinicManager.Win/ClinicManager.Win.csproj"
+                 Targets="Publish"
+                 Properties="Configuration=$(Configuration)" 
+                 Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true" />
+  
+        />
+  </Target>
+  
+</Project>
