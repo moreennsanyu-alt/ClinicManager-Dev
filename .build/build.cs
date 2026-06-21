@@ -211,6 +211,17 @@ class Build : NukeBuild
                     )
                 );
         });
+
+		Target PublishDesktop => _ => _
+            .DependsOn(Restore)
+            .Executes(() =>
+            {
+                var winProjectName = "ClinicManager.Win";
+            
+            var winProject = Solution.GetAllProjects(setupProjectName).First();
+         
+            
+        });
 		
     Target Installers => _ => _
         .DependsOn(Restore)
@@ -226,6 +237,7 @@ class Build : NukeBuild
                 .When(_ => GenerateBinLog == true, c => c
                     .SetBinaryLog(BuildLogsDirectory / $"ClinicManagerSetup.build.binlog")
                 )
+				.SetProperty("NukeBuild", "True")
                 .EnableNoLogo());
         });
 
