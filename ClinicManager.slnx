@@ -18,6 +18,9 @@
     <Project Path="Src/Desktop.Tests/ClinicManager.E2E.Tests/ClinicManager.E2E.Tests.csproj" />
     <Project Path="Src/Desktop.Tests/ClinicManager.Testing/ClinicManager.Testing.csproj" />
   </Folder>
-  
+
+ <Folder Name="/Setup/">
+    <Project Path="Src/Installer/Installer.csproj" />
+  </Folder>
 
 </Solution>
