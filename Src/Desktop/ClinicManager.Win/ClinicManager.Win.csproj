@@ -6,5 +6,6 @@
         <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
         <OutputType>WinExe</OutputType>
         <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+        <AssemblyName>ClinicMgr</AssemblyName>
     </PropertyGroup>
 </Project>
