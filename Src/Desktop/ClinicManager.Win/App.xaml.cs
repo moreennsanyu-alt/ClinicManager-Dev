@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using DevExpress.Xpf.DemoBase;
 
 namespace ClinicManager.Win;
 
