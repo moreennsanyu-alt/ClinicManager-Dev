@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
+        <LangVersion>13.0</LangVersion>
     </PropertyGroup>
 
     <Target Name="PublishDesktopProject" BeforeTargets="Build">
