@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace ClinicManager.Win.Views;
 
-public partial class Shell : ThemedWindow 
+public partial class Shell : Window 
 {
     public Shell() 
     {
