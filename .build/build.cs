@@ -216,7 +216,7 @@ class Build : NukeBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
-            var setupProjectName = "ClinicManager.Setup";
+            var setupProjectName = "Installer";
             
             var setupProject = Solution.GetAllProjects(setupProjectName).First();
          
