@@ -83,7 +83,7 @@ class Build : NukeBuild
 
             DotNetToolRestore();
 			
-			DotNet("tool install --global wix");
+			DotNet("tool install --global wix --version 6.0.2");
             DotNet("wix extension add -g WixToolset.UI.wixext/6.0.2");
             
             //DotNet("paket restore");
