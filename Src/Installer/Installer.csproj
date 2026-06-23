@@ -2,16 +2,38 @@
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
         <LangVersion>13.0</LangVersion>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>WixSharp</RootNamespace>
     </PropertyGroup>
+  
+    <ItemGroup>
+        <None Remove="*.msi" />
+        <None Remove="*.exe" />
+        <None Remove="*.wxs" />
+        <None Remove="*.wixpdb" />
+        <None Remove="*.wixobj" />
+    </ItemGroup>
 
-  <Target Name="PublishDesktopProject" BeforeTargets="Build"
+    <ItemGroup>
+        <PackageReference Include="WixSharp_wix4" Version="2.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="System.Windows.Forms" />
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="cd .\&#xD;&#xA;set ide=true&#xD;&#xA;&quot;$(TargetPath)&quot;" />
+    </Target>
+
+    <Target Name="PublishDesktopProject" BeforeTargets="Build"
           Condition=" '$(NukeBuild)' != 'True' ">
-    <MSBuild Projects="..\Desktop\ClinicManager.Win/ClinicManager.Win.csproj"
+        <MSBuild Projects="..\Desktop\ClinicManager.Win/ClinicManager.Win.csproj"
              Targets="Publish"
              Properties="Configuration=$(Configuration);
                          RuntimeIdentifier=win-x64;
                          SelfContained=true;
                          PublishProfile=FolderProfile" />
-  </Target>
+    </Target>
   
 </Project>
