@@ -218,13 +218,18 @@ class Build : NukeBuild
             {
                 var winProjectName = "ClinicManager.Win";
             
-            var winProject = Solution.GetAllProjects(setupProjectName).First();
-         
+                var winProject = Solution.GetAllProjects(winProjectName).First();
+                DotNetPublish(s => s
+                    .SetProject(winProject)
+                    .SetConfiguration(Configuration)
+                    .SetPublishProfile("FolderProfile") // use your publish profile
+                    .SetOutput(OutputDirectory / "publish"));
+			
             
         });
 		
     Target Installers => _ => _
-        .DependsOn(Restore)
+        .DependsOn(PublishDesktop)
         .Executes(() =>
         {
             var setupProjectName = "Installer";
