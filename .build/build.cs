@@ -222,8 +222,7 @@ class Build : NukeBuild
                 DotNetPublish(s => s
                     .SetProject(winProject)
                     .SetConfiguration(Configuration)
-                    .SetPublishProfile("FolderProfile") // use your publish profile
-                    .SetOutput(OutputDirectory / "publish"));
+                    .SetPublishProfile("FolderProfile"));
 			
             
         });
