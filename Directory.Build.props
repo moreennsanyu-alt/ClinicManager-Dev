@@ -9,4 +9,8 @@
         <Nullable>enable</Nullable>
         <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Constant Include="ClinicManager.DesktopPublishDirectory" Value="$(DesktopPublishPath)" />
+  </ItemGroup>
 </Project>
