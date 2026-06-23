@@ -16,6 +16,7 @@
 
     <ItemGroup>
         <PackageReference Include="WixSharp_wix4" />
+        <PackageReference Include="ThisAssembly.Constants" />
     </ItemGroup>
 
     <ItemGroup>
