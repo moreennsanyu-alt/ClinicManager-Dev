@@ -11,6 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Constant Include="ClinicManager.DesktopPublishDirectory" Value="$(DesktopPublishPath)" />
+    <Constant Include="CMConstants.DesktopPublishDirectory" Value="$(DesktopPublishPath)" />
   </ItemGroup>
 </Project>
