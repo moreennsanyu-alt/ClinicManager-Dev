@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using WixSharp;
 using WixSharp.Forms;
+using static ThisAssembly.Constants.CMConstants;
 
 namespace WixSharp
 {
@@ -11,7 +12,7 @@ namespace WixSharp
         {
             var project = new ManagedProject("MyProduct",
                              new Dir(@"%ProgramFiles%\My Company\My Product",
-                                 new File("Program.cs")));
+                                 new DirFiles($"{}.cs")));
 
             project.GUID = new Guid("e354ffb8-4d6a-4422-8bf7-21d4e88643a7");
 
