@@ -12,7 +12,7 @@ namespace WixSharp
         {
             var project = new ManagedProject("MyProduct",
                              new Dir(@"%ProgramFiles%\My Company\My Product",
-                                 new DirFiles($"{DesktopPublishDirectory}\*.*")));
+                                 new DirFiles(@$"{DesktopPublishDirectory}\*.*")));
 
             project.GUID = new Guid("e354ffb8-4d6a-4422-8bf7-21d4e88643a7");
 
