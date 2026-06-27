@@ -9,6 +9,7 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
+using Nuke.Common.Tools.GitHub;
 using Nuke.Common.Tools.ReportGenerator;
 using Nuke.Common.Tools.Xunit;
 using Nuke.Common.Utilities;
@@ -20,6 +21,7 @@ using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Nuke.Common.Tools.Xunit.XunitTasks;
 using static Serilog.Log;
 using Serilog;
+using static ThisAssembly.Constants.CMConstants;
 
 [UnsetVisualStudioEnvironmentVariables]
 [DotNetVerbosityMapping]
@@ -44,7 +46,7 @@ class Build : NukeBuild
     [Solution(GenerateProjects = false)]
     readonly Solution Solution = null!;
     
-
+    AbsolutePath MsiFile => ArtifactsDirectory / "MyApplication.msi";
 
     [Required]
     [GitRepository]
@@ -244,6 +246,61 @@ class Build : NukeBuild
                 )
 				.SetProperty("NukeBuild", "True")
                 .EnableNoLogo());
+        });
+
+
+		Target CreateGitHubRelease => _ => _
+        .DependsOn(Installers)
+        .Requires(() => GitHubToken)
+        .Executes(async () =>
+        {
+            // 1. Configure the GitHub Client
+            GitHubTasks.GitHubClient = new GitHubClient(new ProductHeaderValue("nuke-build"))
+            {
+                Credentials = new Credentials(GitHubToken)
+            };
+
+            // 2. Dynamically extract owner and name from the current Git repository
+            // GitRepository.GetGitHubOwner() and GetGitHubName() parse the remote URL automatically
+            string repositoryOwner = GitRepository.GetGitHubOwner();
+            string repositoryName = GitRepository.GetGitHubName();
+            
+            string version = "1.0.0"; 
+            string tagName = $"v{version}";
+
+            Log.Information($"Target Repository: {repositoryOwner}/{repositoryName}");
+            Log.Information($"Creating GitHub release for tag {tagName}...");
+
+            // 3. Create the release payload
+            var newRelease = new NewRelease(tagName)
+            {
+                Name = $"Release {tagName}",
+                Body = $"Automated release for version {version}.",
+                Draft = false,
+                Prerelease = false
+            };
+
+            // 4. Submit the release using the extracted repo details
+            var release = await GitHubTasks.GitHubClient.Repository.Release.Create(
+                repositoryOwner, 
+                repositoryName, 
+                newRelease
+            );
+
+            // 5. Upload the MSI asset
+            Log.Information($"Uploading MSI asset: {MsiFile.Name}...");
+            
+            using var rawMsiStream = File.OpenRead(@$"{DesktopPublishDirectory}");
+            var assetUpload = new ReleaseAssetUpload
+            {
+                FileName = MsiFile.Name,
+                ContentType = "application/x-msi",
+                RawData = rawMsiStream
+            };
+
+            await GitHubTasks.GitHubClient.Repository.Release.UploadAsset(release, assetUpload);
+
+            Log.Success($"Successfully created release and uploaded {MsiFile.Name} to {repositoryOwner}/{repositoryName}!");
         });
 
 		Target Full => _ => _
