@@ -3,10 +3,12 @@
     <PropertyGroup>
         <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
         <DesktopPublishPath>$(ArtifactsPath)\Publish\ClinicManager.Win</DesktopPublishPath>
+        <InstallerPath>$(ArtifactsPath)\Publish\Setup</InstallerPath>
     </PropertyGroup>
 
     <ItemGroup>
         <Constant Include="CMConstants.DesktopPublishDirectory" Value="$(DesktopPublishPath)" />
+        <Constant Include="CMConstants.InstallerPath" Value="$(InstallerPath)" />
     </ItemGroup>
 </Project>
 
