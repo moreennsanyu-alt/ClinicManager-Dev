@@ -42,7 +42,7 @@ namespace WixSharp
             //project.SourceBaseDir = "<input dir path>";
             //project.OutDir = "<output dir path>";
 
-            project.BuildMsi();
+            project.BuildMsi(InstallerPath);
         }
 
         static void Msi_Load(SetupEventArgs e)
