@@ -3,7 +3,7 @@
     <PropertyGroup>
         <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
         <DesktopPublishPath>$(ArtifactsPath)\Publish\ClinicManager.Win</DesktopPublishPath>
-        <InstallerPath>$(ArtifactsPath)\Publish\Setup</InstallerPath>
+        <InstallerPath>$(ArtifactsPath)\Publish\Installers\CMSetup.msi</InstallerPath>
     </PropertyGroup>
 
     <ItemGroup>
