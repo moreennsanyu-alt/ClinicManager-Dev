@@ -34,7 +34,7 @@ class Build : NukeBuild
        - Microsoft VSCode           https://nuke.build/vscode
     */
 
-    public static int Main() => Execute<Build>(x => x.Installers);
+    public static int Main() => Execute<Build>(x => x.CreateGitHubRelease);
 
     [Parameter("The solution configuration to build. Default is 'Debug' (local) or 'CI' (server).")]
     readonly Configuration Configuration = Configuration.Debug;
@@ -290,7 +290,7 @@ class Build : NukeBuild
             // 5. Upload the MSI asset
             Log.Information($"Uploading MSI asset: {MsiFile.Name}...");
             
-            using var rawMsiStream = File.OpenRead(@$"{DesktopPublishDirectory}");
+            using var rawMsiStream = File.OpenRead(@$"{InstallerPath}");
             var assetUpload = new ReleaseAssetUpload
             {
                 FileName = MsiFile.Name,
