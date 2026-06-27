@@ -268,8 +268,8 @@ class Build : NukeBuild
             string version = "1.0.0"; 
             string tagName = $"v{version}";
 
-            Log.Information($"Target Repository: {repositoryOwner}/{repositoryName}");
-            Log.Information($"Creating GitHub release for tag {tagName}...");
+           // Log.Information($"Target Repository: {repositoryOwner}/{repositoryName}");
+           // Log.Information($"Creating GitHub release for tag {tagName}...");
 
             // 3. Create the release payload
             var newRelease = new NewRelease(tagName)
@@ -288,7 +288,7 @@ class Build : NukeBuild
             );
 
             // 5. Upload the MSI asset
-            Log.Information($"Uploading MSI asset: {MsiFile.Name}...");
+            //Log.Information($"Uploading MSI asset: {MsiFile.Name}...");
             
             using var rawMsiStream = File.OpenRead(@$"{InstallerPath}");
             var assetUpload = new ReleaseAssetUpload
@@ -300,7 +300,7 @@ class Build : NukeBuild
 
             await GitHubTasks.GitHubClient.Repository.Release.UploadAsset(release, assetUpload);
 
-            Log.Success($"Successfully created release and uploaded {MsiFile.Name} to {repositoryOwner}/{repositoryName}!");
+            //Log.Success($"Successfully created release and uploaded {MsiFile.Name} to {repositoryOwner}/{repositoryName}!");
         });
 
 		Target Full => _ => _
