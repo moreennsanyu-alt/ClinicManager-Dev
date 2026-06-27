@@ -1,1 +1,12 @@
+<Project>
+
+    <PropertyGroup>
+        <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
+        <DesktopPublishPath>$(ArtifactsPath)\Publish\ClinicManager.Win</DesktopPublishPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Constant Include="CMConstants.DesktopPublishDirectory" Value="$(DesktopPublishPath)" />
+    </ItemGroup>
+</Project>
 
