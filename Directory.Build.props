@@ -4,7 +4,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
-        <DesktopPublishPath>$(ArtifactsPath)\Publush\ClinicManager.Win</DesktopPublishPath>
+        <DesktopPublishPath>$(ArtifactsPath)\Publish\ClinicManager.Win</DesktopPublishPath>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
