@@ -34,7 +34,7 @@ class Build : FalloutBuild
        - Microsoft VSCode           https://nuke.build/vscode
     */
 
-    public static int Main() => Execute<Build>(x => x.PublishInstallerRelease);
+    public static int Main() => Execute<Build>(x => x.Installers);
 
     [Parameter("The solution configuration to build. Default is 'Debug' (local) or 'CI' (server).")]
     readonly Configuration Configuration = Configuration.Debug;
@@ -261,28 +261,29 @@ class Build : FalloutBuild
                 return;
             }
 
-            var releaseName = GitRepository.GetGitVersion().NuGetVersionV2;
+            // Get version from git tag or use commit SHA
+            var version = GitRepository.Tags.FirstOrDefault() ?? GitRepository.Commit.Substring(0, 8);
             
-            Information($"Publishing MSI installer to GitHub releases for version {releaseName}...");
+            Information($"Publishing MSI installer to GitHub releases for version {version}...");
             
-            GitHubTasks.GitHubClient
-                .Repository
-                .Release
-                .Create(GitRepository.GetGitHubOwner(), GitRepository.GetGitHubName(), new Octokit.NewRelease(releaseName)
-                {
-                    Name = $"Release {releaseName}",
-                    Body = $"ClinicManager MSI Installer v{releaseName}",
-                    Draft = false,
-                    Prerelease = false
-                })
-                .Wait();
+            // Create release on GitHub
+            var gitHubClient = GitHubTasks.GitHubClient;
+            var owner = GitRepository.GetGitHubOwner();
+            var repo = GitRepository.GetGitHubName();
+            
+            var newRelease = new Octokit.NewRelease(version)
+            {
+                Name = $"ClinicManager {version}",
+                Body = $"ClinicManager MSI Installer Release\n\nVersion: {version}\nBuild Date: {DateTime.UtcNow:yyyy-MM-dd}",
+                Draft = false,
+                Prerelease = false
+            };
 
-            var release = GitHubTasks.GitHubClient
-                .Repository
-                .Release
-                .GetLatest(GitRepository.GetGitHubOwner(), GitRepository.GetGitHubName())
-                .Result;
+            var release = gitHubClient.Repository.Release.Create(owner, repo, newRelease).Result;
+            
+            Information($"Created release: {release.Name}");
 
+            // Upload MSI as asset
             using var fileStream = System.IO.File.OpenRead(msiPath);
             var assetUpload = new Octokit.ReleaseAssetUpload()
             {
@@ -291,13 +292,11 @@ class Build : FalloutBuild
                 RawData = fileStream
             };
 
-            GitHubTasks.GitHubClient
-                .Repository
-                .Release
-                .UploadAsset(release, assetUpload)
-                .Wait();
-
-            Information($"MSI installer published successfully to {release.HtmlUrl}");
+            var uploadedAsset = gitHubClient.Repository.Release.UploadAsset(release, assetUpload).Result;
+            
+            Information($"MSI installer published successfully!");
+            Information($"Release URL: {release.HtmlUrl}");
+            Information($"Download URL: {uploadedAsset.BrowserDownloadUrl}");
         });
 
     Target Full => _ => _
