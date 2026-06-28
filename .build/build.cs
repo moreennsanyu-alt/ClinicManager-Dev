@@ -215,21 +215,21 @@ class Build : FalloutBuild
                 );
         });
 
-		Target PublishDesktop => _ => _
-            .DependsOn(Restore)
-            .Executes(() =>
-            {
-                var winProjectName = "ClinicManager.Win";
-            
-                var winProject = Solution.GetAllProjects(winProjectName).First();
-                DotNetPublish(s => s
-                    .SetProject(winProject)
-                    .SetConfiguration(Configuration)
-                    .SetPublishProfile("FolderProfile"));
-			
-            
-        });
+	Target PublishDesktop => _ => _
+        .DependsOn(Restore)
+        .Executes(() =>
+        {
+            var winProjectName = "ClinicManager.Win";
+        
+            var winProject = Solution.GetAllProjects(winProjectName).First();
+            DotNetPublish(s => s
+                .SetProject(winProject)
+                .SetConfiguration(Configuration)
+                .SetPublishProfile("FolderProfile"));
 		
+        
+        });
+	
     Target Installers => _ => _
         .DependsOn(PublishDesktop)
         .Executes(() =>
@@ -244,21 +244,72 @@ class Build : FalloutBuild
                 .When(_ => GenerateBinLog == true, c => c
                     .SetBinaryLog(BuildLogsDirectory / $"ClinicManagerSetup.build.binlog")
                 )
-				.SetProperty("FalloutBuild", "True")
+			.SetProperty("FalloutBuild", "True")
                 .EnableNoLogo());
         });
 
+    Target PublishInstallerRelease => _ => _
+        .DependsOn(Installers)
+        .OnlyWhenDynamic(() => GitRepository.IsOnMainBranch())
+        .Executes(() =>
+        {
+            var msiPath = ArtifactsDirectory / "Publish" / "Installers" / "CMSetup.msi";
+            
+            if (!msiPath.FileExists())
+            {
+                Warning($"MSI file not found at {msiPath}");
+                return;
+            }
 
-		Target Full => _ => _
+            var releaseName = GitRepository.GetGitVersion().NuGetVersionV2;
+            
+            Information($"Publishing MSI installer to GitHub releases for version {releaseName}...");
+            
+            GitHubTasks.GitHubClient
+                .Repository
+                .Release
+                .Create(GitRepository.GetGitHubOwner(), GitRepository.GetGitHubName(), new Octokit.NewRelease(releaseName)
+                {
+                    Name = $"Release {releaseName}",
+                    Body = $"ClinicManager MSI Installer v{releaseName}",
+                    Draft = false,
+                    Prerelease = false
+                })
+                .Wait();
+
+            var release = GitHubTasks.GitHubClient
+                .Repository
+                .Release
+                .GetLatest(GitRepository.GetGitHubOwner(), GitRepository.GetGitHubName())
+                .Result;
+
+            using var fileStream = System.IO.File.OpenRead(msiPath);
+            var assetUpload = new Octokit.ReleaseAssetUpload()
+            {
+                FileName = msiPath.Name,
+                ContentType = "application/x-msi",
+                RawData = fileStream
+            };
+
+            GitHubTasks.GitHubClient
+                .Repository
+                .Release
+                .UploadAsset(release, assetUpload)
+                .Wait();
+
+            Information($"MSI installer published successfully to {release.HtmlUrl}");
+        });
+
+    Target Full => _ => _
         .DependsOn(Compile)
-		.DependsOn(Installers)
-	    .DependsOn(Tests)
+	.DependsOn(Installers)
+        .DependsOn(Tests)
         .Executes(() =>
         {
             
             
         });
-		
+	
     static bool IsDocumentation(string x) =>
         x.StartsWith("docs") ||
         x.StartsWith("CONTRIBUTING.md") ||
