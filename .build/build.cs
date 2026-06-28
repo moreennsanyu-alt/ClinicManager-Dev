@@ -42,6 +42,9 @@ class Build : FalloutBuild
     [Parameter("Use this parameter if you encounter build problems in any way, " +
         "to generate a .binlog file which holds some useful information.")]
     readonly bool? GenerateBinLog;
+
+    [Parameter("GitHub authentication token for publishing releases")]
+    readonly string GitHubToken = null!;
  
     [Solution(GenerateProjects = false)]
     readonly Solution Solution = null!;
@@ -261,13 +264,24 @@ class Build : FalloutBuild
                 return;
             }
 
+            // Validate GitHub token
+            if (string.IsNullOrEmpty(GitHubToken))
+            {
+                Error("GitHub token not provided. Set GitHubToken parameter or GITHUB_TOKEN environment variable.");
+                return;
+            }
+
             // Get version from git tag or use commit SHA
             var version = GitRepository.Tags.FirstOrDefault() ?? GitRepository.Commit.Substring(0, 8);
             
             Information($"Publishing MSI installer to GitHub releases for version {version}...");
             
-            // Create release on GitHub
-            var gitHubClient = GitHubTasks.GitHubClient;
+            // Create authenticated GitHub client
+            var gitHubClient = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("ClinicManager-Build"))
+            {
+                Credentials = new Octokit.Credentials(GitHubToken)
+            };
+            
             var owner = GitRepository.GetGitHubOwner();
             var repo = GitRepository.GetGitHubName();
             
@@ -279,24 +293,32 @@ class Build : FalloutBuild
                 Prerelease = false
             };
 
-            var release = gitHubClient.Repository.Release.Create(owner, repo, newRelease).Result;
-            
-            Information($"Created release: {release.Name}");
-
-            // Upload MSI as asset
-            using var fileStream = System.IO.File.OpenRead(msiPath);
-            var assetUpload = new Octokit.ReleaseAssetUpload()
+            try
             {
-                FileName = msiPath.Name,
-                ContentType = "application/x-msi",
-                RawData = fileStream
-            };
+                var release = gitHubClient.Repository.Release.Create(owner, repo, newRelease).Result;
+                
+                Information($"Created release: {release.Name}");
 
-            var uploadedAsset = gitHubClient.Repository.Release.UploadAsset(release, assetUpload).Result;
-            
-            Information($"MSI installer published successfully!");
-            Information($"Release URL: {release.HtmlUrl}");
-            Information($"Download URL: {uploadedAsset.BrowserDownloadUrl}");
+                // Upload MSI as asset
+                using var fileStream = System.IO.File.OpenRead(msiPath);
+                var assetUpload = new Octokit.ReleaseAssetUpload()
+                {
+                    FileName = msiPath.Name,
+                    ContentType = "application/x-msi",
+                    RawData = fileStream
+                };
+
+                var uploadedAsset = gitHubClient.Repository.Release.UploadAsset(release, assetUpload).Result;
+                
+                Information($"MSI installer published successfully!");
+                Information($"Release URL: {release.HtmlUrl}");
+                Information($"Download URL: {uploadedAsset.BrowserDownloadUrl}");
+            }
+            catch (Exception ex)
+            {
+                Error($"Failed to publish release: {ex.Message}");
+                throw;
+            }
         });
 
     Target Full => _ => _
