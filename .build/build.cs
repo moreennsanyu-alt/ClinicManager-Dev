@@ -249,60 +249,6 @@ class Build : NukeBuild
         });
 
 
-		Target CreateGitHubRelease => _ => _
-        .DependsOn(Installers)
-        .Requires(() => GitHubToken)
-        .Executes(async () =>
-        {
-            // 1. Configure the GitHub Client
-            GitHubTasks.GitHubClient = new GitHubClient(new ProductHeaderValue("nuke-build"))
-            {
-                Credentials = new Credentials(GitHubToken)
-            };
-
-            // 2. Dynamically extract owner and name from the current Git repository
-            // GitRepository.GetGitHubOwner() and GetGitHubName() parse the remote URL automatically
-            string repositoryOwner = GitRepository.GetGitHubOwner();
-            string repositoryName = GitRepository.GetGitHubName();
-            
-            string version = "1.0.0"; 
-            string tagName = $"v{version}";
-
-           // Log.Information($"Target Repository: {repositoryOwner}/{repositoryName}");
-           // Log.Information($"Creating GitHub release for tag {tagName}...");
-
-            // 3. Create the release payload
-            var newRelease = new NewRelease(tagName)
-            {
-                Name = $"Release {tagName}",
-                Body = $"Automated release for version {version}.",
-                Draft = false,
-                Prerelease = false
-            };
-
-            // 4. Submit the release using the extracted repo details
-            var release = await GitHubTasks.GitHubClient.Repository.Release.Create(
-                repositoryOwner, 
-                repositoryName, 
-                newRelease
-            );
-
-            // 5. Upload the MSI asset
-            //Log.Information($"Uploading MSI asset: {MsiFile.Name}...");
-            
-            using var rawMsiStream = File.OpenRead(@$"{InstallerPath}");
-            var assetUpload = new ReleaseAssetUpload
-            {
-                FileName = MsiFile.Name,
-                ContentType = "application/x-msi",
-                RawData = rawMsiStream
-            };
-
-            await GitHubTasks.GitHubClient.Repository.Release.UploadAsset(release, assetUpload);
-
-            //Log.Success($"Successfully created release and uploaded {MsiFile.Name} to {repositoryOwner}/{repositoryName}!");
-        });
-
 		Target Full => _ => _
         .DependsOn(Compile)
 		.DependsOn(Installers)
