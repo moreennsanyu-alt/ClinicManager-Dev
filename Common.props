@@ -1,9 +1,9 @@
 <Project>
 
     <PropertyGroup>
-        <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
-        <DesktopPublishPath>$(ArtifactsPath)\Publish\ClinicManager.Win</DesktopPublishPath>
-        <InstallerPath>$(ArtifactsPath)\Publish\Installers\CMSetup.msi</InstallerPath>
+        <ArtifactsPath2>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath2>
+        <DesktopPublishPath>$(ArtifactsPath2)\Publish\ClinicManager.Win</DesktopPublishPath>
+        <InstallerPath>$(ArtifactsPath2)\Publish\Installers\CMSetup.msi</InstallerPath>
     </PropertyGroup>
 
     <ItemGroup>
