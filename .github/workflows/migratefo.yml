@@ -33,7 +33,7 @@ jobs:
     
       - name: Run Paket Update
         id: paket
-        run: fallout-migrate --dry-run
+        run: fallout-migrate
         
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
