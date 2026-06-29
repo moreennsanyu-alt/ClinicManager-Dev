@@ -65,7 +65,21 @@ class Build : FalloutBuild
 
     AbsolutePath TestResultsDirectory => AttachmentsDirectory / "TestResults";
 
+
+    [Required]
+    [GitVersion(Framework = "net10.0", NoCache = true, NoFetch = true)]
+    readonly GitVersion GitVersion;
+	
     string SemVer = null!;
+
+	Target CalculateVersion => _ => _
+        .OnlyWhenDynamic(() => RunAllTargets || HasSourceChanges)
+        .Executes(() =>
+        {
+            SemVer = GitVersion.SemVer;
+
+           // Information("SemVer = {semver}", SemVer);
+        });
 
     Target Clean => _ => _
         .Executes(() =>
@@ -235,6 +249,7 @@ class Build : FalloutBuild
 	
     Target Installers => _ => _
         .DependsOn(PublishDesktop)
+		.DependsOn(CalculateVersion)
         .Executes(() =>
         {
             var setupProjectName = "Installer";
@@ -272,7 +287,7 @@ class Build : FalloutBuild
             }
 
             // Get version from git tag or use commit SHA
-            var version = GitRepository.Tags.FirstOrDefault() ?? GitRepository.Commit.Substring(0, 8);
+            var version = SemVer;
             
             Information($"Publishing MSI installer to GitHub releases for version {version}...");
             
