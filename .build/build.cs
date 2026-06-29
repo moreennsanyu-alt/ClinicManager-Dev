@@ -73,7 +73,6 @@ class Build : FalloutBuild
     string SemVer = null!;
 
 	Target CalculateVersion => _ => _
-        .OnlyWhenDynamic(() => RunAllTargets || HasSourceChanges)
         .Executes(() =>
         {
             SemVer = GitVersion.SemVer;
