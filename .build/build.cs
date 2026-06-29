@@ -298,60 +298,33 @@ class Build : FalloutBuild
             
             var owner = GitRepository.GetGitHubOwner();
             var repo = GitRepository.GetGitHubName();
+            
+            var newRelease = new Octokit.NewRelease(version)
+            {
+                Name = $"ClinicManager {version}",
+                Body = $"ClinicManager MSI Installer Release\n\nVersion: {version}\nBuild Date: {DateTime.UtcNow:yyyy-MM-dd}",
+                Draft = false,
+                Prerelease = false
+            };
 
             try
             {
-                // Check if release already exists
-                Octokit.Release existingRelease = null;
-                try
-                {
-                    existingRelease = gitHubClient.Repository.Release.Get(owner, repo, version).Result;
-                    Information($"Release {version} already exists. Skipping release creation.");
-                }
-                catch (Octokit.NotFoundException)
-                {
-                    // Release doesn't exist, we'll create it
-                }
-
-                Octokit.Release release = existingRelease;
-
-                if (release == null)
-                {
-                    var newRelease = new Octokit.NewRelease(version)
-                    {
-                        Name = $"ClinicManager {version}",
-                        Body = $"ClinicManager MSI Installer\n\nVersion: {version}\nBuild Date: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC",
-                        Draft = false,
-                        Prerelease = false
-                    };
-
-                    release = gitHubClient.Repository.Release.Create(owner, repo, newRelease).Result;
-                    Information($"Created release: {release.Name}");
-                }
-
-                // Upload MSI as asset (only the MSI file, no source code)
-                var msiFileName = System.IO.Path.GetFileName(msiPath);
+                var release = gitHubClient.Repository.Release.Create(owner, repo, newRelease).Result;
                 
-                // Check if asset already exists
-                var existingAsset = release.Assets.FirstOrDefault(a => a.Name == msiFileName);
-                if (existingAsset != null)
-                {
-                    Information($"MSI asset {msiFileName} already exists in this release. Deleting old asset...");
-                    gitHubClient.Repository.Release.DeleteAsset(owner, repo, existingAsset.Id).Wait();
-                }
+                Information($"Created release: {release.Name}");
 
-                Information($"Uploading MSI: {msiFileName}");
+                // Upload MSI as asset
                 using var fileStream = System.IO.File.OpenRead(msiPath);
                 var assetUpload = new Octokit.ReleaseAssetUpload()
                 {
-                    FileName = msiFileName,
+                    FileName = msiPath.Name,
                     ContentType = "application/x-msi",
                     RawData = fileStream
                 };
 
                 var uploadedAsset = gitHubClient.Repository.Release.UploadAsset(release, assetUpload).Result;
                 
-                Information($"✓ MSI installer published successfully!");
+                Information($"MSI installer published successfully!");
                 Information($"Release URL: {release.HtmlUrl}");
                 Information($"Download URL: {uploadedAsset.BrowserDownloadUrl}");
             }
@@ -361,7 +334,6 @@ class Build : FalloutBuild
                 throw;
             }
         });
-
 
     Target Full => _ => _
         .DependsOn(Compile)
