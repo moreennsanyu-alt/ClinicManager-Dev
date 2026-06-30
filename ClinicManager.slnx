@@ -12,6 +12,13 @@
     <Project Path="Src/Desktop/ClinicManager.Win/ClinicManager.Win.csproj" />
   </Folder> 
   
+  <Folder Name="/Server/">
+    <Project Path="Src/Server/Application/Application.csproj" />
+    <Project Path="Src/Server/Web/Web.csproj" />
+    <Project Path="Src/Server/Domain/Domain.csproj" />
+    <Project Path="Src/Server/Infrastructure/Infrastructure.csproj" />
+  </Folder> 
+  
   <Folder Name="/DesktopTests/">
     <Project Path="Src/Desktop.Tests/ClinicManager.Core.Tests/ClinicManager.Core.Tests.csproj" />
     <Project Path="Src/Desktop.Tests/ClinicManager.Win.Tests/ClinicManager.Win.Tests.csproj" />
