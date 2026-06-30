@@ -11,4 +11,5 @@
         <WriteVersionInfoToBuildLog>true</WriteVersionInfoToBuildLog>
         <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
+
 </Project>
