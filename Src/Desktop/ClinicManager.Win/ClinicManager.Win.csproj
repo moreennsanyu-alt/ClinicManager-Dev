@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
-        <UseWindowsForms>True</UseWindowsForms>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <UseWPF>True</UseWPF>
         <OutputType>WinExe</OutputType>
         <AssemblyName>ClinicMgr</AssemblyName>
     </PropertyGroup>

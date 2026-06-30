@@ -25,6 +25,13 @@
     <Project Path="Src/Desktop.Tests/ClinicManager.E2E.Tests/ClinicManager.E2E.Tests.csproj" />
     <Project Path="Src/Desktop.Tests/ClinicManager.Testing/ClinicManager.Testing.csproj" />
   </Folder>
+  
+  <Folder Name="/ServerTests/">
+    <Project Path="Src/Server.Tests/Application.UnitTests/Application.UnitTests.csproj" />
+    <Project Path="Src/Server.Tests/Domain.UnitTests/Domain.UnitTests.csproj" />
+    <Project Path="Src/Server.Tests/Application.FunctionalTests/Application.FunctionalTests.csproj" />
+    <Project Path="Src/Server.Tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj" />
+  </Folder>
 
  <Folder Name="/Setup/">
     <Project Path="Src/Installer/Installer.csproj" />
