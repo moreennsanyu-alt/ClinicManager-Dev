@@ -1,4 +1,4 @@
-name: Migrate from nuke
+name: Create arch
 
 on:
   workflow_dispatch:
@@ -28,13 +28,12 @@ jobs:
       - name: Restore Local Tools
         run: dotnet tool restore
         
-      - name: Extract Split Archive
-        run: dotnet tool install -g Fallout.Migrate
-    
-      - name: Run Paket Update
-        id: paket
-        run: fallout-migrate
-        
+      - name: Install Clean Architecture Template
+        run: dotnet new --install Clean.Architecture.Solution.Template@10.4.1
+
+      - name: Create Solution with Web API + SQLite
+        run: dotnet new ca-sln --name ClinicManager--webapi true --useSQLite true
+      
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
