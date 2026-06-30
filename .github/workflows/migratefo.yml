@@ -32,7 +32,7 @@ jobs:
         run: dotnet new --install Clean.Architecture.Solution.Template@10.4.1
 
       - name: Create Solution with Web API + SQLite
-        run: dotnet new ca-sln --name ClinicManager--webapi true --useSQLite true
+        run: dotnet new ca-sln -cf None -o ClinicManager --database sqlite
       
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
