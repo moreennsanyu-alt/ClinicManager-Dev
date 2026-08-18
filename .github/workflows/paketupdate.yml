@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'paket.dependencies'
+  workflow_dispatch:
 
 permissions:
   contents: write
