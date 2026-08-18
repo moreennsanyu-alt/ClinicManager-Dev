@@ -1,0 +1,134 @@
+source https://api.nuget.org/v3/index.json
+
+storage: packages
+strategy: min
+lowest_matching: true
+copy_local:true
+specific_version : false
+framework:netstandard2.0,net9.0,net9.0-windows,net48
+
+nuget DevExpress.Wpf 24.2.15
+nuget DevExpress.Wpf.Themes.All 24.2.15
+nuget DevExpress.Wpf.Scheduling 24.2.15
+nuget DevExpress.DataAccess 24.2.15  
+nuget DevExpress.Document.Processor 24.2.15
+nuget DevExpress.Drawing.Skia 24.2.15
+
+nuget DevExpress.RichEdit.Export 24.2.15
+nuget DevExpress.Scaffolding.Core 24.2.15
+nuget DevExpress.Scaffolding.EFCore 24.2.15 24.2.15
+nuget DevExpress.Wpf.Accordion 24.2.15
+nuget DevExpress.Wpf.Carousel 24.2.15
+nuget DevExpress.Wpf.Charts 24.2.15
+nuget DevExpress.Wpf.Core.Extensions 24.2.15
+nuget DevExpress.Wpf.Diagram 24.2.15
+nuget DevExpress.Wpf.Dialogs 24.2.15
+nuget DevExpress.Wpf.Docking 24.2.15
+nuget DevExpress.Wpf.DocumentViewer.Core 24.2.15
+nuget DevExpress.Wpf.ExpressionEditor 24.2.15
+nuget DevExpress.Wpf.Gantt 24.2.15
+nuget DevExpress.Wpf.Gauges 24.2.15
+nuget DevExpress.Wpf.Grid 24.2.15
+nuget DevExpress.Wpf.LayoutControl 24.2.15
+nuget DevExpress.Wpf.Map 24.2.15
+nuget DevExpress.Wpf.NavBar 24.2.15
+nuget DevExpress.Wpf.PdfViewer 24.2.15
+nuget DevExpress.Wpf.PivotGrid 24.2.15
+nuget DevExpress.Wpf.Printing 24.2.15
+nuget DevExpress.Wpf.PrismAdapters 24.2.15
+nuget DevExpress.Wpf.PropertyGrid 24.2.15
+nuget DevExpress.Wpf.Ribbon 24.2.15
+nuget DevExpress.Wpf.RichEdit 24.2.15
+nuget DevExpress.Wpf.SchedulingReporting 24.2.15
+nuget DevExpress.Wpf.SpellChecker 24.2.15
+nuget DevExpress.Wpf.Spreadsheet 24.2.15
+nuget DevExpress.Wpf.TreeMap 24.2.15
+nuget DevExpress.Wpf.TypedStyles 24.2.15
+nuget DevExpress.Mvvm 24.2.15
+nuget DevExpress.Mvvm.CodeGenerators 22.1.1
+nuget DevExpress.Wpf.ThemesLW 24.2.15
+
+
+nuget System.Text.Json == 9.0.19
+nuget System.Runtime.CompilerServices.Unsafe 6.1.2
+nuget System.Collections.Immutable == 9.0.19
+nuget Microsoft.Windows.Compatibility 9.0.19
+nuget Microsoft.Bcl.AsyncInterfaces 9.0.19
+
+nuget Enums.NET 5.0.0
+nuget FasterFlect.Xpand 2.0.7
+nuget System.Reflection.Metadata 9.0.19
+nuget Microsoft.CodeAnalysis 4.12.0
+nuget System.ValueTuple 4.6.2
+nuget System.Memory 4.6.3
+nuget Microsoft.VisualBasic 10.3.0
+nuget System.Diagnostics.DiagnosticSource == 9.0.19
+
+nuget System.Net.Http 4.3.4
+nuget System.Text.RegularExpressions 4.3.1
+nuget xunit.v3 3.2.2
+nuget xunit.runner.visualstudio 3.1.5
+
+nuget Microsoft.Extensions.Hosting 9.0.19
+
+nuget Moq 4.20.72
+nuget nunit 4.5.1
+nuget NUnit.Analyzers 4.12.0
+nuget NUnit3TestAdapter 6.2.0
+nuget Shouldly 4.3.0
+
+# Microsoft.Extensions.* (MicrosoftExtensionsVersion = 9.0.19)
+nuget Microsoft.Extensions.Logging 9.0.19
+nuget Microsoft.Extensions.Logging.Debug 9.0.19
+nuget Microsoft.Extensions.Logging.Console 9.0.19
+
+nuget Microsoft.Extensions.Configuration 9.0.19
+nuget Microsoft.Extensions.Configuration.Xml 9.0.19
+nuget Microsoft.Extensions.Configuration.Json 9.0.19
+nuget Microsoft.Extensions.Configuration.CommandLine 9.0.19
+nuget Microsoft.Extensions.Configuration.UserSecrets 9.0.19
+nuget Microsoft.Extensions.Configuration.EnvironmentVariables 9.0.19
+nuget Microsoft.Extensions.Configuration.FileExtensions 9.0.19
+nuget Microsoft.Extensions.Configuration.Binder 9.0.19
+
+nuget Microsoft.Extensions.Options 9.0.19
+nuget Microsoft.Extensions.Options.ConfigurationExtensions 9.0.19
+
+nuget WixSharp_wix4 2.14.1
+nuget Newtonsoft.Json 13.0.4
+
+nuget Prism.Wpf 8.1.97
+nuget Prism.Core 8.1.97
+nuget Prism.DryIoc 8.1.97
+
+nuget CommunityToolkit.Mvvm 8.4.0
+
+nuget DryIoc.Microsoft.DependencyInjection 6.2.0
+
+nuget Microsoft.Xaml.Behaviors.Wpf 1.1.142
+
+nuget PolySharp 1.16.0
+
+nuget Serilog 4.4.0
+
+nuget WPFLocalizeExtensionEzzFork 3.10.1
+nuget XAMLMarkupExtensionsEzzFork 2.1.4
+nuget MailKit 4.17.0
+nuget MimeKit 4.17.0
+nuget Utf8StringInterpolation 1.3.2
+nuget Humanizer.Core 3.0.10
+nuget ThisAssembly.Constants 1.4.3
+
+nuget xunit.v3.mtp-v2 3.2.2
+nuget xunit.v3.extensibility.core 3.2.2
+
+nuget Microsoft.Testing.Extensions.CodeCoverage 18.8.0
+nuget Microsoft.TestPlatform.ObjectModel 18.8.1
+
+# FlaUI (FlaUIVersion = 5.0.0)
+nuget FlaUI.Core.Signed 5.0.0
+nuget FlaUI.UIA2.Signed 5.0.0
+nuget FlaUI.UIA3.Signed 5.0.0
+nuget FlaUI.TestUtilities 5.0.0
+
+nuget Nerdbank.GitVersioning 3.10.91
