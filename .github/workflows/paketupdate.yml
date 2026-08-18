@@ -1,0 +1,109 @@
+name: Update Dx Packages 
+
+on:
+  push:
+    paths:
+      - 'paket.dependencies'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  paket-update:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x' # Adjust to match your SDK version
+
+      - name: Restore Local Tools
+        run: dotnet tool restore
+    
+      - name: Patch paket.dependencies
+        shell: pwsh
+        env:
+          PAKET_SOURCE: ${{ secrets.PAKET_SOURCE }}
+        run: |
+          $file = "paket.dependencies"
+          $bak  = "$file.bak"
+          if (-not (Test-Path $file)) {
+            Write-Host "No $file found, skipping patch."
+            exit 0
+          }
+
+          # Backup original so we can restore later
+          Copy-Item -Force $file $bak
+
+          # Trim the secret and skip if empty
+          $sourceContent = $env:PAKET_SOURCE
+          if ([string]::IsNullOrWhiteSpace($sourceContent)) {
+            Write-Host "PAKET_SOURCE is empty; leaving file unchanged."
+            exit 0
+          }
+
+          # If the exact source content already exists in the file, do nothing
+          try {
+            $already = Select-String -Path $file -Pattern ([regex]::Escape($sourceContent)) -SimpleMatch -Quiet
+          } catch {
+            $already = $false
+          }
+          if ($already) {
+            Write-Host "Source content already present in $file; skipping insert."
+            exit 0
+          }
+
+          # Prepend the secret content (keeps original file after it)
+          $tmp = "$file.tmp"
+          $sourceContent | Out-File -FilePath $tmp -Encoding utf8
+          "" | Out-File -FilePath $tmp -Encoding utf8 -Append
+          Get-Content -Raw -Path $file | Out-File -FilePath $tmp -Encoding utf8 -Append
+          Move-Item -Force $tmp $file
+          Write-Host "Inserted source from secret into top of $file (backup at $bak)."
+
+      - name: Run Paket Update
+        id: paket
+        run: dotnet paket update
+
+      - name: restore paket.dependencies
+        shell: pwsh
+        run: |
+          $file = "paket.dependencies"
+          $bak  = "$file.bak"
+          if (Test-Path $bak) {
+            Move-Item -Force $bak $file
+            Write-Host "Restored original $file from backup."
+          } else {
+            Write-Host "No backup ($bak) found; nothing to restore."
+          }
+
+      - name: Publish DevExpress packages to GitHub Packages
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # owner from "owner/repo"
+          $owner = ($env:GITHUB_REPOSITORY -split '/')[0]
+          $source = "https://nuget.pkg.github.com/$owner/index.json"
+          $apiKey = $env:NUGET_API_KEY
+
+          $filesToPush = Get-ChildItem -Path "packages" -Filter "devexpress*.nupkg" -Recurse
+          if ($filesToPush.Count -eq 0) {
+            Write-Host "No DevExpress packages found to publish."
+            exit 0
+          }
+
+          Write-Host "Publishing packages to $source"
+          foreach ($f in $filesToPush) {
+            Write-Host " - Pushing $($f.FullName)"
+            dotnet nuget push "$($f.FullName)" --source $source --api-key $apiKey --skip-duplicate
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "dotnet nuget push failed for $($f.Name) with exit code $LASTEXITCODE"
+              exit $LASTEXITCODE
+            }
+          }
